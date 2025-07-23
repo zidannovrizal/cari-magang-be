@@ -59,16 +59,25 @@ class JobBoardService {
 
       // Jika ada API key, gunakan axios untuk hit API yang sebenarnya
       if (process.env.RAPIDAPI_KEY && process.env.RAPIDAPI_HOST) {
-        const response = await axios.get(`${process.env.RAPIDAPI_HOST}/jobs`, {
-          headers: {
-            "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
-            "X-RapidAPI-Host": process.env.RAPIDAPI_HOST,
-          },
-          params: queryParams,
-        });
+        try {
+          const response = await axios.get(
+            `https://${process.env.RAPIDAPI_HOST}/active-jb-7d`,
+            {
+              headers: {
+                "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
+                "X-RapidAPI-Host": process.env.RAPIDAPI_HOST,
+              },
+              params: queryParams,
+            }
+          );
 
-        console.log(`✅ Fetched ${response.data.length || 0} jobs from API`);
-        return response.data || [];
+          console.log(`✅ Fetched ${response.data.length || 0} jobs from API`);
+          return response.data || [];
+        } catch (error) {
+          console.error("❌ API Error:", error.message);
+          // Fallback ke mock data jika API error
+          console.log("🔄 Using mock data as fallback...");
+        }
       }
 
       // Simulasi API response (untuk testing tanpa API key)

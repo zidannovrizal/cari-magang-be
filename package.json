@@ -18,6 +18,7 @@
     "start:auto-sync": "node scripts/startAutoSync.js",
     "cron:sync": "node scripts/railwayCronSync.js",
     "test:cron-endpoint": "node scripts/testCronEndpoint.js",
+    "test:simple-sync": "node scripts/testSimpleSync.js",
     "test": "jest"
   },
   "dependencies": {
