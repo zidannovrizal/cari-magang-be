@@ -240,8 +240,93 @@ router.post("/sync", async (req, res) => {
 });
 
 /**
+ * @route   GET /api/job-board/cron-sync
+ * @desc    Cron job endpoint untuk sync jobs (dipanggil oleh external cron service) - GET method
+ * @access  Public
+ */
+router.get("/cron-sync", async (req, res) => {
+  try {
+    console.log(
+      "🕐 Cron job triggered (GET) at:",
+      new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
+    );
+
+    // Check environment variables
+    if (!process.env.RAPIDAPI_KEY || !process.env.RAPIDAPI_HOST) {
+      console.log("⚠️ API keys not found, using mock data");
+      // Return success with mock data for testing
+      return res.json({
+        success: true,
+        message: "Cron sync completed with mock data (no API keys)",
+        data: { savedCount: 0, skippedCount: 0 },
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Default sync parameters untuk cron job
+    const syncParams = {
+      title_filter: "intern",
+      location_filter: "Indonesia",
+      remote: "false",
+      offset: 0,
+    };
+
+    console.log("🔄 Starting cron sync with params:", syncParams);
+    const result = await jobBoardService.syncJobsFromAPI(syncParams);
+
+    if (result.success) {
+      console.log("✅ Cron sync completed successfully");
+      res.json({
+        success: true,
+        message: "Cron sync completed successfully",
+        data: result.data,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      console.error("❌ Cron sync failed:", result.message);
+      res.status(500).json({
+        success: false,
+        message: result.message,
+        error: result.error,
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error in cron sync route:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error during cron sync",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @route   GET /api/job-board/test
+ * @desc    Simple test endpoint untuk cron job
+ * @access  Public
+ */
+router.get("/test", async (req, res) => {
+  try {
+    console.log("🧪 Test endpoint hit at:", new Date().toISOString());
+    res.json({
+      success: true,
+      message: "Test endpoint working",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    });
+  } catch (error) {
+    console.error("❌ Error in test endpoint:", error);
+    res.status(500).json({
+      success: false,
+      message: "Test endpoint error",
+      error: error.message,
+    });
+  }
+});
+
+/**
  * @route   POST /api/job-board/cron-sync
- * @desc    Cron job endpoint untuk sync jobs (dipanggil oleh external cron service)
+ * @desc    Cron job endpoint untuk sync jobs (dipanggil oleh external cron service) - POST method
  * @access  Public
  */
 router.post("/cron-sync", async (req, res) => {
