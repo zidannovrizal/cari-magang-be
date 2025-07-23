@@ -42,10 +42,15 @@ app.use(express.urlencoded({ extended: true }));
 // Handle preflight requests
 app.options("*", cors());
 
-// Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/job-board", require("./routes/jobBoardRoutes"));
+// Simple ping endpoint untuk uptime monitoring (harus di atas routes)
+app.get("/ping", (req, res) => {
+  res.json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+  });
+});
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -55,6 +60,11 @@ app.get("/api/health", (req, res) => {
     message: "Cari Magang API is running",
   });
 });
+
+// Routes
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/job-board", require("./routes/jobBoardRoutes"));
 
 // SDG 8 endpoint
 app.get("/api/sdg8", (req, res) => {
