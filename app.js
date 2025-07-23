@@ -11,6 +11,9 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
+
+// Trust proxy for Railway
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [
