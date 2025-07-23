@@ -252,6 +252,55 @@ router.post("/sync", async (req, res) => {
 });
 
 /**
+ * @route   POST /api/job-board/cron-sync
+ * @desc    Cron job endpoint untuk sync jobs (dipanggil oleh external cron service)
+ * @access  Public
+ */
+router.post("/cron-sync", async (req, res) => {
+  try {
+    console.log(
+      "🕐 Cron job triggered at:",
+      new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })
+    );
+
+    // Default sync parameters untuk cron job
+    const syncParams = {
+      title_filter: "intern",
+      location_filter: "Indonesia",
+      remote: "false",
+      offset: 0,
+    };
+
+    console.log("🔄 Starting cron sync with params:", syncParams);
+    const result = await jobBoardService.syncJobsFromAPI(syncParams);
+
+    if (result.success) {
+      console.log("✅ Cron sync completed successfully");
+      res.json({
+        success: true,
+        message: "Cron sync completed successfully",
+        data: result.data,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      console.error("❌ Cron sync failed:", result.message);
+      res.status(500).json({
+        success: false,
+        message: result.message,
+        error: result.error,
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error in cron sync route:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error during cron sync",
+      error: error.message,
+    });
+  }
+});
+
+/**
  * @route   GET /api/job-board/stats/summary
  * @desc    Get job statistics summary
  * @access  Public

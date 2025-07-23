@@ -16,6 +16,8 @@
     "fix:internships-schema": "node scripts/fixInternshipsSchema.js",
     "test:backend": "node scripts/testBackendEndpoints.js",
     "start:auto-sync": "node scripts/startAutoSync.js",
+    "cron:sync": "node scripts/railwayCronSync.js",
+    "test:cron-endpoint": "node scripts/testCronEndpoint.js",
     "test": "jest"
   },
   "dependencies": {
