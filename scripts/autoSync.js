@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const { exec } = require("child_process");
 const path = require("path");
+require("dotenv").config();
 
 console.log("🕐 Auto-sync scheduler started...");
 
@@ -12,22 +13,29 @@ cron.schedule(
 
     const scriptPath = path.join(__dirname, "..");
 
-    exec("npm run sync-jobs", { cwd: scriptPath }, (error, stdout, stderr) => {
-      if (error) {
-        console.error("❌ Error running sync-jobs:", error);
-        return;
-      }
+    exec(
+      "npm run sync-jobs",
+      {
+        cwd: scriptPath,
+        env: { ...process.env, NODE_ENV: "production" },
+      },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error("❌ Error running sync-jobs:", error);
+          return;
+        }
 
-      if (stderr) {
-        console.error("⚠️ Sync-jobs stderr:", stderr);
-      }
+        if (stderr) {
+          console.error("⚠️ Sync-jobs stderr:", stderr);
+        }
 
-      console.log(
-        "✅ Sync-jobs completed successfully at",
-        new Date().toLocaleString()
-      );
-      console.log("📊 Output:", stdout);
-    });
+        console.log(
+          "✅ Sync-jobs completed successfully at",
+          new Date().toLocaleString()
+        );
+        console.log("📊 Output:", stdout);
+      }
+    );
   },
   {
     scheduled: true,

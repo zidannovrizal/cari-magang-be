@@ -6,6 +6,9 @@ require("dotenv").config();
 
 const { pool } = require("./config/database");
 
+// Import auto-sync scheduler
+const autoSync = require("./scripts/autoSync");
+
 // Import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");

@@ -15,6 +15,7 @@
     "fix:db-schema": "node scripts/fixDatabaseSchema.js",
     "fix:internships-schema": "node scripts/fixInternshipsSchema.js",
     "test:backend": "node scripts/testBackendEndpoints.js",
+    "start:auto-sync": "node scripts/startAutoSync.js",
     "test": "jest"
   },
   "dependencies": {
