@@ -12,6 +12,9 @@
     "validate-env": "node scripts/validateEnv.js",
     "test-db": "node scripts/testDatabase.js",
     "test-api": "node scripts/testJobBoardAPI.js",
+    "fix:db-schema": "node scripts/fixDatabaseSchema.js",
+    "fix:internships-schema": "node scripts/fixInternshipsSchema.js",
+    "test:backend": "node scripts/testBackendEndpoints.js",
     "test": "jest"
   },
   "dependencies": {
