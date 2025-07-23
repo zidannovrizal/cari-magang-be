@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(100)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Internship {
+  id                      Int       @id @default(autoincrement())
+  apiId                   String?   @unique @map("api_id") @db.VarChar(50)
+  title                   String    @db.VarChar(200)
+  description             String?   @db.Text
+  organization            String    @db.VarChar(100)
+  organizationUrl         String?   @map("organization_url") @db.VarChar(500)
+  organizationLogo        String?   @map("organization_logo") @db.VarChar(500)
+  organizationSize        String?   @map("organization_size") @db.VarChar(100)
+  organizationIndustry    String?   @map("organization_industry") @db.VarChar(100)
+  organizationHeadquarters String?  @map("organization_headquarters") @db.VarChar(200)
+  organizationDescription String?   @map("organization_description") @db.Text
+  
+  // Location data
+  locationRaw             String?   @map("location_raw") @db.Text
+  addressCountry          String?   @map("address_country") @db.VarChar(100)
+  addressLocality         String?   @map("address_locality") @db.VarChar(100)
+  addressRegion           String?   @map("address_region") @db.VarChar(100)
+  latitude                Decimal?  @db.Decimal(10, 8)
+  longitude               Decimal?  @db.Decimal(11, 8)
+  citiesDerived           String?   @map("cities_derived") @db.Text
+  regionsDerived          String?   @map("regions_derived") @db.Text
+  countriesDerived        String?   @map("countries_derived") @db.Text
+  locationsDerived        String?   @map("locations_derived") @db.Text
+  
+  // Job details
+  employmentType          String?   @map("employment_type") @db.Text
+  seniority               String?   @db.VarChar(50)
+  remoteDerived           Boolean   @default(false) @map("remote_derived")
+  
+  // URLs
+  url                     String    @db.VarChar(500)
+  externalApplyUrl        String?   @map("external_apply_url") @db.VarChar(500)
+  directApply             Boolean   @default(false) @map("direct_apply")
+  
+  // Dates
+  datePosted              DateTime? @map("date_posted")
+  dateCreated             DateTime? @map("date_created")
+  dateValidthrough        DateTime? @map("date_validthrough")
+  
+  // Source info
+  sourceType              String?   @map("source_type") @db.VarChar(50)
+  source                  String?   @db.VarChar(50)
+  sourceDomain            String?   @map("source_domain") @db.VarChar(100)
+  
+  // Additional info
+  salaryRaw               String?   @map("salary_raw") @db.Text
+  locationRequirementsRaw String?   @map("location_requirements_raw") @db.Text
+  recruiterName           String?   @map("recruiter_name") @db.VarChar(100)
+  recruiterTitle          String?   @map("recruiter_title") @db.VarChar(100)
+  recruiterUrl            String?   @map("recruiter_url") @db.VarChar(500)
+  
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@map("internships")
+} 
